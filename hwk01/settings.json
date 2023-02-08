@@ -1,0 +1,6 @@
+{
+    "code-runner.executorMap": {
+        "c": "gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
+    },
+    "code-runner.customCommand": "./pr1 hi hi a"
+}
