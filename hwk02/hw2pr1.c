@@ -32,7 +32,11 @@ main()
     for (i = 0; i < 5; i++) {
       // child recv from parent
       // int c = read(pc[0], string, (strlen(string)+1));  
-      int c = read(pc[0], string, (strlen(string)+1));  
+
+      // this can be used to determine which process will get excuted 
+      if (i > 0) {
+        int c = read(pc[0], string, (strlen(string)+1));  
+      } 
 
 
       // print child info
@@ -52,9 +56,9 @@ main()
 
 
       // parent recv from child
-      if (i > 0) {
+      // if (i > 0) {
         int p = read(cp[0], string, (strlen(string)+1));
-      }
+      // }
 
       // print parent info
       printf("%d. Parent\n", i + 1); 
