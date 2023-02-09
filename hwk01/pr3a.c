@@ -38,10 +38,11 @@
 int 
 main() {
 
-    int rc = fork();
     int c_p[2];
     int i = 0;
-    int c2p = pipe(c_p);
+    pipe(c_p);
+    int rc = fork();
+    char str[1024]; 
     // child => parent
     // child write, parent read
 
@@ -50,24 +51,21 @@ main() {
         fprintf(stderr, "fork failed\n");
         exit(1);
     } else if (rc == 0) {
-        char str[1024] = "AAA";
-        // printf("Enter a number: ");
-        // if (fgets(str, sizeof str, stdin))
-        //     str[strcspn(str, "\n")] = '\0'; // TIP: swap \n with \0
+        printf("Enter a number: ");
+        if (fgets(str, sizeof str, stdin))
+            str[strcspn(str, "\n")] = '\0'; // TIP: swap \n with \0
         // printf("\n str is: %s \n", str);
         close(c_p[0]);
         close(1);
-        dup(c_p[1]);
-        write(1, str, strlen(str)+1);
+        write(c_p[1], str, sizeof str);
     } else {
         wait(NULL);
         close(0);
         close(c_p[1]);
-        dup(c_p[0]);
         char str[1024];
-        int status_code = read(c_p[0], str, strlen(str)+1);
-        for ( i = 0;i < status_code; i++)
-            printf("%c ", str[i]);
-        // printf("%d child exited with status: %s \n", status_code, str);
+        int status_code = read(c_p[0], str, sizeof str);
+        // for ( i = 0; i < status_code; i++)
+        //     printf("~ ~ %c \n", str[i]);
+        printf("%d child exited with status: %s \n", status_code, str);
     }
 }
