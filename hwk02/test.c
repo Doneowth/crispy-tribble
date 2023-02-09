@@ -64,7 +64,7 @@ int main() {
 
         printf("Enter a string: ");
         fgets(line, 1024, stdin);
-        line[strcspn(line, "\n")] = 0;
+        line[strcspn(line, "\n")] = '\0';
 
         ReadCommand(line, &command);
         PrintCommand(&command);

@@ -77,7 +77,6 @@ main() {
     printf("Enter a string: ");
     fgets(s, sizeof s, stdin);
     s[strcspn(s, "\n")] = 0;
-
     ReadCommand(s, &comm);
     PrintCommand(&comm);
 }
