@@ -33,6 +33,9 @@ runner(void *arguments) {
     pthread_mutex_lock(&sum_mutex);
     sum += block;
     pthread_mutex_unlock(&sum_mutex);
+    
+    // free args struct inside of runner;
+    free(args);
 
     if (DEBUG) printf("\n Job %d has finished, Block Sum: %ld \n\n", args->id, block);
 }
@@ -64,26 +67,22 @@ main(int argc, char *argv[]) {
 
     // create thread array
     pthread_t *slave_thread = malloc(sizeof(pthread_t) * num_threads);
-    struct runner_args_t *args = malloc(sizeof(struct runner_args_t) * num_threads);
-
-    // initialize args strct
-    for (int i = 0; i < num_threads; i++) {
-        args[i].id = i;
-        args[i].v = v;
-        args[i].index = start_ind;
-        args[i].size = step;
-
-        // merge extra elements into last thread
-        if (i == num_threads - 1 && start_ind + step < num_elements)
-            args[i].size =num_elements - start_ind;        
-        
-        // make sure the workload is evenly deistibuted
-        start_ind += step;
-    }
 
     // create threads
     for (int i = 0; i < num_threads; i++) {
-        pthread_create(&slave_thread[i], NULL, runner, &args[i]);   
+        struct runner_args_t *args = malloc(sizeof(struct runner_args_t));
+        args->id = i;
+        args->v = v;
+        args->index = start_ind;
+        args->size = step;
+
+        // merge extra elements into last thread
+        if (i == num_threads - 1 && start_ind + step < num_elements)
+            args->size =num_elements - start_ind;        
+        
+        // make sure the workload is evenly deistibuted
+        start_ind += step;
+        pthread_create(&slave_thread[i], NULL, runner, args);   
     }
     
     // join threads
@@ -93,7 +92,6 @@ main(int argc, char *argv[]) {
 
     // free thread array & thread's arguments structure
     free(slave_thread);
-    free(args);
 
     printf("Sum = %ld \n\n", sum);
     gettimeofday(&stop, NULL);
