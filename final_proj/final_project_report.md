@@ -1,11 +1,3 @@
-### Part 1 - Shell
-
----
-
-
-
-
-
 ### Part 2 - xv6 Extension
 
 1. Add `priority`  attr to proc in `proc.h`;
